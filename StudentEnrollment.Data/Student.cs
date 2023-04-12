@@ -13,5 +13,7 @@ namespace StudentEnrollment.Data
         public DateTime DateOfBirth { get; set; }
         public string IdNumber { get; set; }
         public string Picture { get; set; }
+
+        public List<Enrollment> Enrollments { get; set; } = new List<Enrollment>();
     }
 }

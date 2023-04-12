@@ -10,6 +10,9 @@ namespace StudentEnrollment.Api.Configuration
         { 
             CreateMap<Course,CourseDto>().ReverseMap();
             CreateMap<Course,CreateCourseDto>().ReverseMap();
+            CreateMap<Course, CourseDetailsDto>().ForMember(i => i.Students, i => i.MapFrom(course => course.Enrollments.Select(stu => stu.Student)));
+
+            CreateMap<Student, StudentDetailsDto>().ForMember(i => i.Courses, i => i.MapFrom(student => student.Enrollments.Select(course => course.Course)));
         }
     }
 }

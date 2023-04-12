@@ -2,6 +2,10 @@
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.OpenApi;
 using StudentEnrollment.Data;
+using StudentEnrollment.Data.Abstract;
+using AutoMapper;
+using StudentEnrollment.Api.Dtos;
+
 namespace StudentEnrollment.Api;
 
 public static class StudentEndpoints
@@ -10,11 +14,22 @@ public static class StudentEndpoints
     {
         var group = routes.MapGroup("/api/Student").WithTags(nameof(Student));
 
-        group.MapGet("/", async (VtContext db) =>
+        group.MapGet("/", async (IStudentRepository studentRepository,IMapper mapper) =>
         {
-            return await db.Students.ToListAsync();
+            var students = studentRepository.GetAllAsync();
+            var data = mapper.Map<List<StudentDto>>(students);
+            return data;
         })
         .WithName("GetAllStudents")
+        .WithOpenApi();
+
+        group.MapGet("/GetDetails/{id}", async (int id, IStudentRepository studentRepository, IMapper mapper) =>
+        {
+            return await studentRepository.GetStudentDetails(id) is Student model ? Results.Ok(mapper.Map<StudentDetailsDto>(model)) : Results.NotFound();
+        })
+        .WithName("GetAllStudents")
+        .Produces<StudentDetailsDto>(StatusCodes.Status200OK)
+        .Produces(StatusCodes.Status404NotFound)
         .WithOpenApi();
 
         group.MapGet("/{id}", async Task<Results<Ok<Student>, NotFound>> (int id, VtContext db) =>
@@ -50,10 +65,10 @@ public static class StudentEndpoints
         .WithName("UpdateStudent")
         .WithOpenApi();
 
-        group.MapPost("/", async (Student student, VtContext db) =>
+        group.MapPost("/", async (CreateStudentDto studentDto, IStudentRepository studentRepository,IMapper mapper) =>
         {
-            db.Students.Add(student);
-            await db.SaveChangesAsync();
+            var student = mapper.Map<Student>(studentDto);
+            await studentRepository.AddAsync(student);
             return TypedResults.Created($"/api/Student/{student.Id}",student);
         })
         .WithName("CreateStudent")

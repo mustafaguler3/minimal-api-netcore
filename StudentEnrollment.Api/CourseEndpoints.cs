@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.OpenApi;
 using StudentEnrollment.Data;
 using StudentEnrollment.Api.Dtos;
 using AutoMapper;
+using StudentEnrollment.Data.Abstract;
 
 namespace StudentEnrollment.Api;
 
@@ -13,45 +14,48 @@ public static class CourseEndpoints
     {
         var group = routes.MapGroup("/api/Course").WithTags(nameof(Course));
 
-        group.MapGet("/", async (VtContext db,IMapper mapper) =>
+        group.MapGet("/", async (ICourseRepository courseRepository,IMapper mapper) =>
         {
-            var data = new List<CourseDto>();
-            var courses = await db.Courses.ToListAsync();
+            var courses = await courseRepository.GetAllAsync();
+            var data = mapper.Map<List<CourseDto>>(courses);
 
-            return mapper.Map<List<CourseDto>>(courses);
+            return data;
         })
         .WithName("GetAllCourses")
         .WithOpenApi();
 
-        group.MapGet("/{id}", async Task<Results<Ok<Course>, NotFound>> (int id, VtContext db) =>
+        group.MapGet("/{id}", async  (int id, ICourseRepository courseRepository,IMapper mapper) =>
         {
-            return await db.Courses.AsNoTracking()
-                .FirstOrDefaultAsync(model => model.Id == id)
-                is Course model
-                    ? TypedResults.Ok(model)
-                    : TypedResults.NotFound();
+            return await courseRepository.GetAsync(id) is Course course ? Results.Ok(mapper.Map<CourseDto>(course)) : Results.NotFound();
         })
         .WithName("GetCourseById")
         .WithOpenApi();
 
-        /*group.MapPut("/{id}", async Task<Results<Ok, NotFound>> (int id, CourseDto course, VtContext db) =>
+
+        group.MapGet("/GetStudents/{id}", async (int id, ICourseRepository courseRepository, IMapper mapper) =>
         {
-            var affected = await db.Courses
-                .Where(model => model.Id == id)
-                .ExecuteUpdateAsync(setters => setters
-                  .SetProperty(m => m.Title, course.Title)
-                  .SetProperty(m => m.Credits, course.Credits)
-                  .SetProperty(m => m.Id, course.Id)
-                  .SetProperty(m => m.CreatedDate, course.CreatedDate)
-                  .SetProperty(m => m.CreatedBy, course.CreatedBy)
-                  .SetProperty(m => m.ModifiedDate, course.ModifiedDate)
-                  .SetProperty(m => m.ModifiedBy, course.ModifiedBy)
-                );
-            var affected = await db.Courses.ToList();
-            return affected == 1 ? TypedResults.Ok() : TypedResults.NotFound();
+            return await courseRepository.GetStudentList(id) is Course model ? Results.Ok(mapper.Map<CourseDetailsDto>(model)) : Results.NotFound();
+        })
+        .WithName("GetCourseStudentsById")
+        .Produces<CourseDetailsDto>(StatusCodes.Status200OK)
+        .Produces<CourseDetailsDto>(StatusCodes.Status404NotFound)
+        .WithOpenApi();
+
+        group.MapPut("/{id}", async(int id, CourseDto courseDto, VtContext db,IMapper mapper) =>
+        {
+            var foundModel = await db.Courses.FindAsync(id);
+
+            if (foundModel is null)
+            {
+                return Results.NotFound();
+            }
+            mapper.Map(courseDto, foundModel);
+            await db.SaveChangesAsync();
+
+            return Results.NoContent();
         })
         .WithName("UpdateCourse")
-        .WithOpenApi();*/
+        .WithOpenApi();
 
         group.MapPost("/", async (CreateCourseDto courseDto, VtContext db,IMapper mapper) =>
         {
