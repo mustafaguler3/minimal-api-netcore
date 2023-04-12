@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.OpenApi;
 using StudentEnrollment.Data;
 using StudentEnrollment.Api.Dtos;
+using AutoMapper;
 
 namespace StudentEnrollment.Api;
 
@@ -12,22 +13,12 @@ public static class CourseEndpoints
     {
         var group = routes.MapGroup("/api/Course").WithTags(nameof(Course));
 
-        group.MapGet("/", async (VtContext db) =>
+        group.MapGet("/", async (VtContext db,IMapper mapper) =>
         {
             var data = new List<CourseDto>();
             var courses = await db.Courses.ToListAsync();
 
-            foreach (var course in courses)
-            {
-                data.Add(new CourseDto
-                {
-                    Title = course.Title,
-                    Credits = course.Credits,
-                    Id = course.Id,
-                });
-            }
-
-            return data;
+            return mapper.Map<List<CourseDto>>(courses);
         })
         .WithName("GetAllCourses")
         .WithOpenApi();
@@ -43,7 +34,7 @@ public static class CourseEndpoints
         .WithName("GetCourseById")
         .WithOpenApi();
 
-        group.MapPut("/{id}", async Task<Results<Ok, NotFound>> (int id, Course course, VtContext db) =>
+        /*group.MapPut("/{id}", async Task<Results<Ok, NotFound>> (int id, CourseDto course, VtContext db) =>
         {
             var affected = await db.Courses
                 .Where(model => model.Id == id)
@@ -56,19 +47,15 @@ public static class CourseEndpoints
                   .SetProperty(m => m.ModifiedDate, course.ModifiedDate)
                   .SetProperty(m => m.ModifiedBy, course.ModifiedBy)
                 );
-
+            var affected = await db.Courses.ToList();
             return affected == 1 ? TypedResults.Ok() : TypedResults.NotFound();
         })
         .WithName("UpdateCourse")
-        .WithOpenApi();
+        .WithOpenApi();*/
 
-        group.MapPost("/", async (CourseDto courseDto, VtContext db) =>
+        group.MapPost("/", async (CreateCourseDto courseDto, VtContext db,IMapper mapper) =>
         {
-            var course = new Course()
-            {
-                Title = courseDto.Title,
-                Credits= courseDto.Credits,
-            };
+            var course = mapper.Map<Course>(courseDto);
 
             db.Courses.Add(course);
             await db.SaveChangesAsync();

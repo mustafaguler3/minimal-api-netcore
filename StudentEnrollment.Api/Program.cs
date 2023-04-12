@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using StudentEnrollment.Data;
 using StudentEnrollment.Api;
+using StudentEnrollment.Api.Configuration;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -9,6 +10,8 @@ builder.Services.AddDbContext<VtContext>(opt =>
 {
     opt.UseSqlServer(builder.Configuration.GetConnectionString("SqlCon"));
 });
+
+builder.Services.AddAutoMapper(typeof(MapperConfig));
 // Add services to the container.
 
 builder.Services.AddControllers();
