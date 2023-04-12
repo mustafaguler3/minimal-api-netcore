@@ -1,0 +1,14 @@
+C:\Users\Mustafa GULER\source\repos\StudentEnrollment.Api\StudentEnrollment.Data\bin\Debug\net7.0\StudentEnrollment.Data.deps.json
+C:\Users\Mustafa GULER\source\repos\StudentEnrollment.Api\StudentEnrollment.Data\bin\Debug\net7.0\StudentEnrollment.Data.runtimeconfig.json
+C:\Users\Mustafa GULER\source\repos\StudentEnrollment.Api\StudentEnrollment.Data\bin\Debug\net7.0\StudentEnrollment.Data.dll
+C:\Users\Mustafa GULER\source\repos\StudentEnrollment.Api\StudentEnrollment.Data\bin\Debug\net7.0\StudentEnrollment.Data.pdb
+C:\Users\Mustafa GULER\source\repos\StudentEnrollment.Api\StudentEnrollment.Data\obj\Debug\net7.0\StudentEnrollment.Data.csproj.AssemblyReference.cache
+C:\Users\Mustafa GULER\source\repos\StudentEnrollment.Api\StudentEnrollment.Data\obj\Debug\net7.0\StudentEnrollment.Data.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\Mustafa GULER\source\repos\StudentEnrollment.Api\StudentEnrollment.Data\obj\Debug\net7.0\StudentEnrollment.Data.AssemblyInfoInputs.cache
+C:\Users\Mustafa GULER\source\repos\StudentEnrollment.Api\StudentEnrollment.Data\obj\Debug\net7.0\StudentEnrollment.Data.AssemblyInfo.cs
+C:\Users\Mustafa GULER\source\repos\StudentEnrollment.Api\StudentEnrollment.Data\obj\Debug\net7.0\StudentEnrollment.Data.csproj.CoreCompileInputs.cache
+C:\Users\Mustafa GULER\source\repos\StudentEnrollment.Api\StudentEnrollment.Data\obj\Debug\net7.0\StudentEnrollment.Data.dll
+C:\Users\Mustafa GULER\source\repos\StudentEnrollment.Api\StudentEnrollment.Data\obj\Debug\net7.0\refint\StudentEnrollment.Data.dll
+C:\Users\Mustafa GULER\source\repos\StudentEnrollment.Api\StudentEnrollment.Data\obj\Debug\net7.0\StudentEnrollment.Data.pdb
+C:\Users\Mustafa GULER\source\repos\StudentEnrollment.Api\StudentEnrollment.Data\obj\Debug\net7.0\StudentEnrollment.Data.genruntimeconfig.cache
+C:\Users\Mustafa GULER\source\repos\StudentEnrollment.Api\StudentEnrollment.Data\obj\Debug\net7.0\ref\StudentEnrollment.Data.dll

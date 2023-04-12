@@ -1,9 +1,14 @@
+﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using StudentEnrollment.Data;
+using StudentEnrollment.Api;
 
 var builder = WebApplication.CreateBuilder(args);
 
-var con = builder.Configuration.GetConnectionString("SqlCon");
-builder.Services.AddDbContext<VtContext>
+builder.Services.AddDbContext<VtContext>(opt =>
+{
+    opt.UseSqlServer(builder.Configuration.GetConnectionString("SqlCon"));
+});
 // Add services to the container.
 
 builder.Services.AddControllers();
@@ -30,6 +35,57 @@ app.UseCors("AllowAll");
 
 app.UseAuthorization();
 
-app.MapControllers();
+//app.MapControllers();
+app.MapGet("/courses", async (VtContext context) =>
+{
+    return await context.Courses.ToListAsync();
+});
+
+app.MapGet("/courses/{id}", async (VtContext context,int id) =>
+{
+    return await context.Courses.FindAsync(id) is Course course ? Results.Ok(course) : Results.NotFound();
+});
+
+app.MapPost("/courses", async (VtContext context, Course course) =>
+{
+    await context.AddAsync(course);
+    await context.SaveChangesAsync();
+
+    return Results.Created($"/courses/{course.Id}",course);
+});
+
+app.MapPut("/courses/{id}", async (VtContext context, Course course,int id) =>
+{
+    var courseExists = await context.Courses.FindAsync(id);
+    if (courseExists == null)
+    {
+        return Results.NotFound();
+    }
+    courseExists.Credits = course.Credits;
+    courseExists.Title = course.Title;
+
+    context.Update(course);
+    await context.SaveChangesAsync();
+
+    return Results.Created($"/courses/{course.Id}", course);
+});
+
+app.MapDelete("/courses/{id}", async (VtContext context, int id) =>
+{
+    var courseExists = await context.Courses.FindAsync(id);
+    if (courseExists == null)
+    {
+        return Results.NotFound();
+    }
+    context.Remove(courseExists);
+    await context.SaveChangesAsync();
+
+    return Results.NoContent();
+});
+
+app.MapStudentEndpoints();
+
+app.MapCourseEndpoints();
+
 
 app.Run();
