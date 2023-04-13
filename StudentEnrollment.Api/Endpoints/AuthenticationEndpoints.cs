@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using StudentEnrollment.Api.Dtos;
+using StudentEnrollment.Api.Services;
 using StudentEnrollment.Data;
 
 namespace StudentEnrollment.Api.Endpoints
@@ -8,19 +9,9 @@ namespace StudentEnrollment.Api.Endpoints
     {
         public static void MapAuthenticationEndpoints(this IEndpointRouteBuilder routes)
         {
-            routes.MapPost("/api/login/", async (LoginDto loginDto, UserManager<User> userManager) =>
+            routes.MapPost("/api/login/", async (LoginDto loginDto, IAuthManager authManager) =>
             {
-                var user = await userManager.FindByEmailAsync(loginDto.Username);
-                if (user is null)
-                {
-                    return Results.Unauthorized();
-                }
-                bool isValidCredentials = await userManager.CheckPasswordAsync(user, loginDto.Password);
-
-                if (!isValidCredentials)
-                {
-                    return Results.Unauthorized();
-                }
+                var response = authManager.Login(loginDto);
                 //generate token here
 
                 return Results.Ok();
