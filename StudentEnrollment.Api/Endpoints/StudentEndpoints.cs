@@ -6,15 +6,15 @@ using StudentEnrollment.Data.Abstract;
 using AutoMapper;
 using StudentEnrollment.Api.Dtos;
 
-namespace StudentEnrollment.Api;
+namespace StudentEnrollment.Api.Endpoints;
 
 public static class StudentEndpoints
 {
-    public static void MapStudentEndpoints (this IEndpointRouteBuilder routes)
+    public static void MapStudentEndpoints(this IEndpointRouteBuilder routes)
     {
         var group = routes.MapGroup("/api/Student").WithTags(nameof(Student));
 
-        group.MapGet("/", async (IStudentRepository studentRepository,IMapper mapper) =>
+        group.MapGet("/", async (IStudentRepository studentRepository, IMapper mapper) =>
         {
             var students = studentRepository.GetAllAsync();
             var data = mapper.Map<List<StudentDto>>(students);
@@ -65,11 +65,11 @@ public static class StudentEndpoints
         .WithName("UpdateStudent")
         .WithOpenApi();
 
-        group.MapPost("/", async (CreateStudentDto studentDto, IStudentRepository studentRepository,IMapper mapper) =>
+        group.MapPost("/", async (CreateStudentDto studentDto, IStudentRepository studentRepository, IMapper mapper) =>
         {
             var student = mapper.Map<Student>(studentDto);
             await studentRepository.AddAsync(student);
-            return TypedResults.Created($"/api/Student/{student.Id}",student);
+            return TypedResults.Created($"/api/Student/{student.Id}", student);
         })
         .WithName("CreateStudent")
         .WithOpenApi();

@@ -11,11 +11,10 @@ using System.Threading.Tasks;
 
 namespace StudentEnrollment.Data
 {
-    public class VtContext : IdentityDbContext
+    public class VtContext : IdentityDbContext<User>
     {
         public VtContext(DbContextOptions<VtContext> options):base(options)
         {
-
         }
         public DbSet<Course> Courses { get; set; }
         public DbSet<Student> Students { get; set; }
@@ -28,8 +27,12 @@ namespace StudentEnrollment.Data
             builder.Entity<Student>().HasKey(i=>i.Id);
             builder.Entity<Course>().HasKey(i=>i.Id);
             builder.Entity<Enrollment>().HasNoKey();
-            //builder.ApplyConfiguration(new CourseConfiguration());
-            //builder.ApplyConfiguration(new UserRoleConfiguration());
+
+
+            builder.ApplyConfiguration(new CourseConfiguration());
+            builder.ApplyConfiguration(new UserRoleConfiguration());
+            builder.ApplyConfiguration(new RoleConfiguration());
+            builder.ApplyConfiguration(new UserConfiguration());
         }
     }
 

@@ -6,15 +6,15 @@ using StudentEnrollment.Api.Dtos;
 using AutoMapper;
 using StudentEnrollment.Data.Abstract;
 
-namespace StudentEnrollment.Api;
+namespace StudentEnrollment.Api.Endpoints;
 
 public static class CourseEndpoints
 {
-    public static void MapCourseEndpoints (this IEndpointRouteBuilder routes)
+    public static void MapCourseEndpoints(this IEndpointRouteBuilder routes)
     {
         var group = routes.MapGroup("/api/Course").WithTags(nameof(Course));
 
-        group.MapGet("/", async (ICourseRepository courseRepository,IMapper mapper) =>
+        group.MapGet("/", async (ICourseRepository courseRepository, IMapper mapper) =>
         {
             var courses = await courseRepository.GetAllAsync();
             var data = mapper.Map<List<CourseDto>>(courses);
@@ -24,7 +24,7 @@ public static class CourseEndpoints
         .WithName("GetAllCourses")
         .WithOpenApi();
 
-        group.MapGet("/{id}", async  (int id, ICourseRepository courseRepository,IMapper mapper) =>
+        group.MapGet("/{id}", async (int id, ICourseRepository courseRepository, IMapper mapper) =>
         {
             return await courseRepository.GetAsync(id) is Course course ? Results.Ok(mapper.Map<CourseDto>(course)) : Results.NotFound();
         })
@@ -41,7 +41,7 @@ public static class CourseEndpoints
         .Produces<CourseDetailsDto>(StatusCodes.Status404NotFound)
         .WithOpenApi();
 
-        group.MapPut("/{id}", async(int id, CourseDto courseDto, VtContext db,IMapper mapper) =>
+        group.MapPut("/{id}", async (int id, CourseDto courseDto, VtContext db, IMapper mapper) =>
         {
             var foundModel = await db.Courses.FindAsync(id);
 
@@ -57,13 +57,13 @@ public static class CourseEndpoints
         .WithName("UpdateCourse")
         .WithOpenApi();
 
-        group.MapPost("/", async (CreateCourseDto courseDto, VtContext db,IMapper mapper) =>
+        group.MapPost("/", async (CreateCourseDto courseDto, VtContext db, IMapper mapper) =>
         {
             var course = mapper.Map<Course>(courseDto);
 
             db.Courses.Add(course);
             await db.SaveChangesAsync();
-            return TypedResults.Created($"/api/Course/{course.Id}",course);
+            return TypedResults.Created($"/api/Course/{course.Id}", course);
         })
         .WithName("CreateCourse")
         .WithOpenApi();

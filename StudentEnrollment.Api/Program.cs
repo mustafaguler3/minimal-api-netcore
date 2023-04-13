@@ -1,17 +1,22 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using StudentEnrollment.Data;
-using StudentEnrollment.Api;
 using StudentEnrollment.Api.Configuration;
 using StudentEnrollment.Data.Abstract;
 using StudentEnrollment.Data.Concrete;
+using Microsoft.AspNetCore.Identity;
+using StudentEnrollment.Api.Endpoints;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddDbContext<VtContext>(opt =>
 {
     opt.UseSqlServer(builder.Configuration.GetConnectionString("SqlCon"));
-});
+})
+    //.AddIdentity<User,IdentityRole>().AddEntityFrameworkStores<VtContext>();
+
+builder.Services.AddIdentityCore<User>().AddRoles<IdentityRole>()
+    .AddEntityFrameworkStores<VtContext>();
 
 builder.Services.AddAutoMapper(typeof(MapperConfig));
 // Add services to the container.
@@ -22,6 +27,8 @@ builder.Services.AddScoped<ICourseRepository, CourseRepository>();
 builder.Services.AddScoped<IEnrollmentRepository, EnrollmentRepository>();
 
 builder.Services.AddControllers();
+
+builder.Services
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
