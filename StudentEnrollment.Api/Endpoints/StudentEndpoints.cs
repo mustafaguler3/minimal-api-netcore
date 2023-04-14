@@ -5,6 +5,8 @@ using StudentEnrollment.Data;
 using StudentEnrollment.Data.Abstract;
 using AutoMapper;
 using StudentEnrollment.Api.Dtos;
+using StudentEnrollment.Api.Services;
+using FluentValidation;
 
 namespace StudentEnrollment.Api.Endpoints;
 
@@ -43,31 +45,49 @@ public static class StudentEndpoints
         .WithName("GetStudentById")
         .WithOpenApi();
 
-        group.MapPut("/{id}", async Task<Results<Ok, NotFound>> (int id, Student student, VtContext db) =>
+        group.MapPut("/{id}", async (int id, StudentDto studentDto, IStudentRepository studentRepository,IMapper mapper, IValidator<StudentDto> validator, IFileUpload fileUpload) =>
         {
-            var affected = await db.Students
-                .Where(model => model.Id == id)
-                .ExecuteUpdateAsync(setters => setters
-                  .SetProperty(m => m.FirstName, student.FirstName)
-                  .SetProperty(m => m.LastName, student.LastName)
-                  .SetProperty(m => m.DateOfBirth, student.DateOfBirth)
-                  .SetProperty(m => m.IdNumber, student.IdNumber)
-                  .SetProperty(m => m.Picture, student.Picture)
-                  .SetProperty(m => m.Id, student.Id)
-                  .SetProperty(m => m.CreatedDate, student.CreatedDate)
-                  .SetProperty(m => m.CreatedBy, student.CreatedBy)
-                  .SetProperty(m => m.ModifiedDate, student.ModifiedDate)
-                  .SetProperty(m => m.ModifiedBy, student.ModifiedBy)
-                );
+            var validationResult = await validator.ValidateAsync(studentDto);
+            var errors = new List<ErrorResponseDto>();
 
-            return affected == 1 ? TypedResults.Ok() : TypedResults.NotFound();
+            if (!validationResult.IsValid)
+            {
+                return Results.BadRequest(validationResult.ToDictionary());
+            }
+
+            var foundModel = await studentRepository.GetAsync(id);
+            if (foundModel is null)
+            {
+                return Results.NotFound();
+            }
+
+            mapper.Map(studentDto, foundModel);
+
+            if (studentDto.Picture != null)
+            {
+                foundModel.Picture = fileUpload.UploadFile(studentDto.Picture, studentDto.OriginalFileName);
+            }
+
+            await studentRepository.UpdateAsync(foundModel);
+
+            return Results.NoContent();
         })
         .WithName("UpdateStudent")
         .WithOpenApi();
 
-        group.MapPost("/", async (CreateStudentDto studentDto, IStudentRepository studentRepository, IMapper mapper) =>
+        group.MapPost("/", async (CreateStudentDto studentDto, IStudentRepository studentRepository, IMapper mapper,IValidator<CreateStudentDto> validator,IFileUpload fileUpload) =>
         {
+            var validationResult = await validator.ValidateAsync(studentDto);
+            var errors = new List<ErrorResponseDto>();
+
+            if (!validationResult.IsValid)
+            {
+                return Results.BadRequest(validationResult.ToDictionary());
+            }
             var student = mapper.Map<Student>(studentDto);
+
+            student.Picture = fileUpload.UploadFile(studentDto.Picture, studentDto.OriginalFileName);
+
             await studentRepository.AddAsync(student);
             return TypedResults.Created($"/api/Student/{student.Id}", student);
         })

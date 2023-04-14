@@ -6,6 +6,7 @@
         public string LastName { get; set; }
         public DateTime DateOfBirth { get; set; }
         public string IdNumber { get; set; }
-        public string Picture { get; set; }
+        public byte[] Picture { get; set; }
+        public string OriginalFileName { get; set; }
     }
 }

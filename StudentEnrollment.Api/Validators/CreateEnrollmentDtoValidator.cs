@@ -8,7 +8,7 @@ namespace StudentEnrollment.Api.Validators
     {
         private readonly ICourseRepository _courseRepository;
         private readonly IStudentRepository _studentRepository;
-        //CreateEnrollmentDto içindeki studentId ile courseId varmı yokmu sorgulamak için repository inject ediyoz
+
         public CreateEnrollmentDtoValidator(ICourseRepository courseRepository, IStudentRepository studentRepository)
         {
             _courseRepository = courseRepository;
