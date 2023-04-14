@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using FluentValidation;
+using Microsoft.AspNetCore.Http.HttpResults;
+using Microsoft.AspNetCore.Identity;
 using StudentEnrollment.Api.Dtos;
 using StudentEnrollment.Api.Services;
 using StudentEnrollment.Data;
@@ -9,8 +11,15 @@ namespace StudentEnrollment.Api.Endpoints
     {
         public static void MapAuthenticationEndpoints(this IEndpointRouteBuilder routes)
         {
-            routes.MapPost("/api/login/", async (LoginDto loginDto, IAuthManager authManager) =>
+            routes.MapPost("/api/login/", async (IValidator<LoginDto> validator,LoginDto loginDto, IAuthManager authManager) =>
             {
+                var validationResult = await validator.ValidateAsync(loginDto);
+                var errors = new List<ErrorResponseDto>();
+
+                if (!validationResult.IsValid)
+                {
+                    return Results.BadRequest(validationResult.ToDictionary());
+                }
                 var response = await authManager.Login(loginDto);
 
                 if (response is null)
@@ -20,6 +29,7 @@ namespace StudentEnrollment.Api.Endpoints
 
                 return Results.Ok(response);
             })
+                .AllowAnonymous()
                 .WithTags("Authentication")
                 .WithName("Login")
                 .Produces(StatusCodes.Status200OK);

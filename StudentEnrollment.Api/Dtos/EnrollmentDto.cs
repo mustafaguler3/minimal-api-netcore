@@ -1,6 +1,6 @@
 ﻿namespace StudentEnrollment.Api.Dtos
 {
-    public class EnrollmentDto
+    public class EnrollmentDto : CreateEnrollmentDto
     {
         public int CourseId { get; set; }
         public int StudentId { get; set; }

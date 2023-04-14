@@ -10,6 +10,8 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using StudentEnrollment.Api.Services;
+using Microsoft.AspNetCore.Authorization;
+using FluentValidation;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -41,6 +43,18 @@ builder.Services.AddAuthentication(opt =>
 });
 
 builder.Services.AddAutoMapper(typeof(MapperConfig));
+
+//everthing is protected
+//her kim websiteyi ziyaret ederse login ekranını görecek
+//authentication schema ile varsayılan olarak jwt yi kabul ediyoruz
+//tüm endpointle koruma altında
+builder.Services.AddAuthorization(opt =>
+{
+    opt.FallbackPolicy = new AuthorizationPolicyBuilder()
+    .AddAuthenticationSchemes(JwtBearerDefaults.AuthenticationScheme)
+    .RequireAuthenticatedUser()
+    .Build();
+});
 // Add services to the container.
 
 builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
@@ -60,6 +74,8 @@ builder.Services.AddCors(opt =>
 {
     opt.AddPolicy("AllowAll", policy => policy.AllowAnyHeader().AllowAnyOrigin().AllowAnyMethod());
 });
+
+builder.Services.AddValidatorsFromAssemblies(AppDomain.CurrentDomain.GetAssemblies());
 
 var app = builder.Build();
 

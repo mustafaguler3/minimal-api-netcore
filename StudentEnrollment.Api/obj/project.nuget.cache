@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "ASRJQ1mnQ24kiMUxTfz0OS4DQsZuTlxE7TsOSoNe0dwUl06m6LYounYeLnoCDAcZMamXnGDn6xNiM9EK5+5hCA==",
+  "dgSpecHash": "OPdE36KCwxZc3H4drct6OB1QG2Z4sp8z3lM5ZtqzbmZuj8JV416Iv8xwBaBmxII28lKJsK/ES0d0T9OsArON7w==",
   "success": true,
   "projectFilePath": "C:\\Users\\Mustafa GULER\\source\\repos\\StudentEnrollment.Api\\StudentEnrollment.Api\\StudentEnrollment.Api.csproj",
   "expectedPackageFiles": [
@@ -8,6 +8,8 @@
     "C:\\Users\\Mustafa GULER\\.nuget\\packages\\automapper.extensions.microsoft.dependencyinjection\\12.0.1\\automapper.extensions.microsoft.dependencyinjection.12.0.1.nupkg.sha512",
     "C:\\Users\\Mustafa GULER\\.nuget\\packages\\azure.core\\1.24.0\\azure.core.1.24.0.nupkg.sha512",
     "C:\\Users\\Mustafa GULER\\.nuget\\packages\\azure.identity\\1.6.0\\azure.identity.1.6.0.nupkg.sha512",
+    "C:\\Users\\Mustafa GULER\\.nuget\\packages\\fluentvalidation\\11.5.2\\fluentvalidation.11.5.2.nupkg.sha512",
+    "C:\\Users\\Mustafa GULER\\.nuget\\packages\\fluentvalidation.dependencyinjectionextensions\\11.5.2\\fluentvalidation.dependencyinjectionextensions.11.5.2.nupkg.sha512",
     "C:\\Users\\Mustafa GULER\\.nuget\\packages\\humanizer.core\\2.14.1\\humanizer.core.2.14.1.nupkg.sha512",
     "C:\\Users\\Mustafa GULER\\.nuget\\packages\\microsoft.aspnetcore.authentication.jwtbearer\\7.0.5\\microsoft.aspnetcore.authentication.jwtbearer.7.0.5.nupkg.sha512",
     "C:\\Users\\Mustafa GULER\\.nuget\\packages\\microsoft.aspnetcore.cryptography.internal\\7.0.5\\microsoft.aspnetcore.cryptography.internal.7.0.5.nupkg.sha512",

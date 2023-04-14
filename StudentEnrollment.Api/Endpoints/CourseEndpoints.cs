@@ -5,6 +5,7 @@ using StudentEnrollment.Data;
 using StudentEnrollment.Api.Dtos;
 using AutoMapper;
 using StudentEnrollment.Data.Abstract;
+using Microsoft.AspNetCore.Authorization;
 
 namespace StudentEnrollment.Api.Endpoints;
 
@@ -14,13 +15,13 @@ public static class CourseEndpoints
     {
         var group = routes.MapGroup("/api/Course").WithTags(nameof(Course));
 
-        group.MapGet("/", async (ICourseRepository courseRepository, IMapper mapper) =>
+        group.MapGet("/",async (ICourseRepository courseRepository, IMapper mapper) =>
         {
             var courses = await courseRepository.GetAllAsync();
             var data = mapper.Map<List<CourseDto>>(courses);
 
             return data;
-        })
+        }).AllowAnonymous()
         .WithName("GetAllCourses")
         .WithOpenApi();
 
@@ -57,7 +58,7 @@ public static class CourseEndpoints
         .WithName("UpdateCourse")
         .WithOpenApi();
 
-        group.MapPost("/", async (CreateCourseDto courseDto, VtContext db, IMapper mapper) =>
+        group.MapPost("/", [Authorize] async (CreateCourseDto courseDto, VtContext db, IMapper mapper) =>
         {
             var course = mapper.Map<Course>(courseDto);
 
@@ -68,7 +69,7 @@ public static class CourseEndpoints
         .WithName("CreateCourse")
         .WithOpenApi();
 
-        group.MapDelete("/{id}", async Task<Results<Ok, NotFound>> (int id, VtContext db) =>
+        group.MapDelete("/{id}",[Authorize(Roles = "Administrator")] async Task<Results<Ok, NotFound>> (int id, VtContext db) =>
         {
             var affected = await db.Courses
                 .Where(model => model.Id == id)
