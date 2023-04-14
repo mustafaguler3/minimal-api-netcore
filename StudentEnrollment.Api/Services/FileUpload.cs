@@ -18,7 +18,7 @@
                 return string.Empty;
             }
             var folderPath = "studentpictures";
-            var url = httpContextAccessor.HttpContext?.Request.Host.Value;//localhost:5800 gibi
+            var url = httpContextAccessor.HttpContext?.Request.Host.Value;
             var ext = Path.GetExtension(imageName);
             var fileName = $"{Guid.NewGuid()}{ext}";
 
@@ -30,7 +30,7 @@
         private void UploadImage(byte[] fileBytes, string path)
         {
             FileInfo file = new FileInfo(path);
-            file?.Directory?.Create();//if directory already exists,this method does nothing
+            file?.Directory?.Create();
             var fileStream = file?.Create();
             fileStream?.Write(fileBytes, 0, fileBytes.Length);
             fileStream?.Close();

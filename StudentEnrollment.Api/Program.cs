@@ -56,6 +56,8 @@ builder.Services.AddAuthorization(opt =>
     .Build();
 });
 // Add services to the container.
+builder.Services.AddHttpContextAccessor();
+builder.Services.AddScoped<IFileUpload,FileUpload>();
 
 builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
 builder.Services.AddScoped<IStudentRepository, StudentRepository>();

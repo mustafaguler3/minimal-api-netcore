@@ -7,6 +7,7 @@ using AutoMapper;
 using StudentEnrollment.Api.Dtos;
 using StudentEnrollment.Api.Services;
 using FluentValidation;
+using StudentEnrollment.Api.Filters;
 
 namespace StudentEnrollment.Api.Endpoints;
 
@@ -91,6 +92,8 @@ public static class StudentEndpoints
             await studentRepository.AddAsync(student);
             return TypedResults.Created($"/api/Student/{student.Id}", student);
         })
+            .AddEndpointFilter<ValidationFilter<CreateStudentDto>>()
+            .AddEndpointFilter<LoggingFilter>()
         .WithName("CreateStudent")
         .WithOpenApi();
 
